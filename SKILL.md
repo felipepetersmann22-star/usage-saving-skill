@@ -1,53 +1,25 @@
 ---
 name: usage-saving
-description: Use before starting a task, pipeline, subagent plan or new scheduled job, or when asked to make an assistant setup cheaper without losing quality. Right-sizes the work, reads less, waits instead of polling, and routes to the focused skills for chats, routines, delegation and reuse.
+description: Review an assistant workflow for unnecessary calls, repeated context, polling or scheduled work when the user wants a more efficient setup without losing required quality.
 license: MIT
 ---
 
 # Usage saving
 
-Goal: the same useful result with fewer model calls, less context read, and fewer wake-ups. Spend usage only where it changes the result.
+Reduce work that does not improve the requested outcome. Preserve correctness, timely progress updates, required verification, privacy, independent reviews and the user's scope. Do not infer permission to change another setup, stop a run or send a message.
 
-This is the entry point of a small set. Use the focused skill when the task is mainly about one area:
+## Review the work
 
-| Area | Skill |
-|---|---|
-| Long chats, summaries, handover notes | `lean-chats` |
-| Scheduled jobs, triggers, digests, watches | `frugal-routines` |
-| Subagents, workers, effort levels, briefs | `cheap-delegation` |
-| Checking skills, notes and files before researching | `reuse-before-research` |
-| Tidying one assistant: handover, memory, files | `clean-and-compact` |
-| Weekly review of the whole setup | `weekly-cleanup-review` |
+1. **Define the result and constraints.** Identify the decision or deliverable, deadline, required evidence, sources of truth and any permitted side effects. Distinguish an inexpensive lookup from a consequential or open-ended task; neither has a fixed permitted number of calls.
+2. **Read selectively, then verify.** Reuse relevant current knowledge and retrieve the smallest useful evidence. Check freshness for changeable or consequential facts, inspect enough context to avoid a misleading excerpt, and broaden the search when uncertainty matters.
+3. **Choose execution.** Batch independent reads. Delegate only when available and authorized, and when independent work or review materially helps. Use bounded waits or completion events instead of busy polling. Check actual progress and applicable limits; a slow run is not permission to terminate it. Give updates when requested or useful for longer work.
+4. **Inspect recurring work.** For each job, compare its schedule, scope, recipient and result with the real need. Consider removing duplicate reads, incremental updates or merging compatible work, but preserve deadlines, failure isolation, notification preferences and the owner's authorization.
+5. **Explain trade-offs.** Report concrete avoidable work and the proposed change, including what could be lost. Use actual counts when known, such as 96 checks per day to two, without translating them into token or cost savings absent relevant measurements. Implement only changes within the user's authorized scope and verify their effect.
 
-If your platform has its own usage report or a built-in skill for checking plans, limits and billing, let it answer questions about real usage figures. This set covers how work is designed, not billing.
+## Optional companions
 
-## 1. Right-size first
-Name the task's shape before doing anything:
-- **Lookup** (one fact): one search or one read, then answer. No plan, no workers.
-- **Known steps**: do them in order, in one context.
-- **Open-ended**: a short plan, then workers only where they pay (`cheap-delegation`).
+If installed and applicable, `lean-chats` handles handovers, `frugal-routines` schedules, `cheap-delegation` delegation, `reuse-before-research` prior work, `clean-and-compact` tidying, and `weekly-cleanup-review` a setup review. They are independent skills, not dependencies. If one is unavailable, use the relevant steps above and state any capability gap rather than assuming it ran. Consult the platform's own usage report for actual consumption.
 
-Stop when the answer is good enough for the decision it feeds. Extra sources, drafts and review rounds that won't change the decision are waste.
+## Example
 
-## 2. Read less
-- Read the smallest thing that answers: a search snippet before a page, a section before a document, the relevant lines before a whole file, a diff before a codebase.
-- Don't reread what you already hold. In long tasks keep a short notes file and pass it on.
-- Limit lists and searches (count, date range, filters) instead of paging through everything.
-
-## 3. Batch and wait properly
-- Put independent calls in one step. Put questions for a person in one message.
-- Don't poll. Use a completion notice or event, or one wait sized to the expected run time.
-- Before any wait, set a limit (about 1.5 to 2 times the expected time). When it passes, look once at status or the last lines of output. Still progressing: wait once more. Not progressing: stop it if safe and report what you saw. Never loop waits without a limit.
-- Report once at the end, not a running commentary.
-
-## 4. Reviewing an existing setup
-For each chat, job or pipeline ask: how often does it run, and how often is its result used? What does each run read? Does it poll? How many workers does it start, and does each change the result? Does it message when nothing changed?
-
-Then propose at most three changes, in this order: changes that remove whole runs or workers, then changes that cut what each run reads, then small trims. For each, say what is given up.
-
-**Saying how much it saves**: name the quantity that drops, in the setup's own terms ("96 checks a day becomes 2"). Don't put a percentage or size on the usage saving; you can't see the bill. Offer to make the change and compare the usage report afterwards.
-
-## Rules
-- Never trade away correctness, safety checks, required reviews or approvals to save usage. Say what a step costs instead of cutting it.
-- Don't delete notes, history or files to "read less". Archive and index them.
-- Changes to schedules, plans, limits or someone else's setup wait for the owner's yes.
+A team checks a low-urgency feed every 15 minutes even though its summary is used twice daily. Verify the actual schedule, deadline and audience, then propose two checks per day if those checks still meet their needs. That changes 96 checks to two; actual token or money savings remain unknown without measurement. Keep a separate urgent alert if its requirements differ.
